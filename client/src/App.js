@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import ItemManagerContract from "./contracts/ItemManager.json"
-import ItemContract from "./contracts/Item.json"
+
 import getWeb3 from "./getWeb3";
 
 import "./App.css";
 
 class App extends Component {
-  state = { loaded: false, cost: 0, itemName: "Example 1"};
 
   componentDidMount = async () => {
     try {
@@ -19,11 +17,13 @@ class App extends Component {
       // Get the contract instance.
       this.networkId = await this.web3.eth.net.getId();
 
+      // TODO: Change item Manager references with respective voting contract references..
       this.itemManager = new this.web3.eth.Contract(
         ItemManagerContract.abi,
         ItemManagerContract.networks[this.networkId] && ItemManagerContract.networks[this.networkId].address,
       );
-
+      
+      // TODO: Change item references with respective voting contract references.
       this.item = new this.web3.eth.Contract(
         ItemContract.abi,
         ItemContract.networks[this.networkId] && ItemContract.networks[this.networkId].address,
@@ -31,7 +31,10 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
+
+      // TODO: Change to voting event.
       this.listenToPaymentEvent();
+
       this.setState({ loaded: true });
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -42,6 +45,7 @@ class App extends Component {
     }
   };
 
+  // TODO: Change this event to listen to vote.
   listenToPaymentEvent = () => {
     let self = this;
     self.itemManager.events.SupplyChainStep().on("data", async function(evt) {
@@ -56,6 +60,7 @@ class App extends Component {
     });
   }
 
+  // TODO: Change item references with respective voting contract references.  
   handleSubmit = async () => {
     const { cost, itemName } = this.state;
     console.log(itemName, cost, this.itemManager);
@@ -80,12 +85,8 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <h1>Even Trigger / Supply Chain Example</h1>
-        <h2>Items</h2>
-        <h2>Add Items</h2>
-        Cost in Wei: <input type="text" name="cost" value={this.state.cost} onChange={this.handleInputChange} />
-        Item Identifier: <input type="text" name="itemName" value={this.state.itemName} onChange={this.handleInputChange} />
-        <button type="button" onClick={this.handleSubmit}>Create New Item</button>
+        <h1>Decentralized Voting</h1>
+        
       </div>
     );
   }
